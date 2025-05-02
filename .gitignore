@@ -1,3 +1,2 @@
-node_modules/
 dist/
-mockServer/mockServiceWorker.js
+node_modules/

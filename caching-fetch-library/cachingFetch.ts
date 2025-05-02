@@ -53,7 +53,7 @@ export const useCachingFetch: UseCachingFetch = (url) => {
     if(!promise) {
       promise = fetch(url).then((response) => {
         if(!response || !response.ok) {
-          // throw error
+          throw Error("Unable to load response from server.");
         }
         return response.json();
       })
@@ -131,7 +131,9 @@ export const preloadCachingFetch = async (url: string): Promise<void> => {
  * 4. This file passes a type-check.
  *
  */
-export const serializeCache = (): string => '';
+export const serializeCache = (): string => {
+  return "";
+}
 
 export const initializeCache = (serializedCache: string): void => {};
 
