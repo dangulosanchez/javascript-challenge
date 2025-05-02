@@ -20,7 +20,9 @@ In the development of this task, I have had to do the following:
 * Define types for People data that is received from external API
 * Create cache hooks to ensure that data is loaded efficiently
 ## Cache
-There are two JavaScript objects initialized and used for the cache. These are simply two objects that use key-value pairs to efficiently retrieve data. One is needed for the results of the fetches, and the other one is needed for the fetches themselves, providing real-time information about its loading state.
+There are two JavaScript objects initialized and used for the cache. These are simply two objects that use key-value pairs to efficiently retrieve data.
+* dataCache maps each URL to its fetched JSON result. Tch url to his allows for quick retreival after the initial fetch.
+* promiseCache maps each URL to the promise besing used for its fetch. This allows for multiple components that may depend on it to utilize the same network request.
 ## Future Development
 In order for us to acheive a higher level of code standards and best practices, we should implement the following:
 * Unit testing for our cache functions, specifically to try edge cases
