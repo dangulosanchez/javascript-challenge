@@ -1,3 +1,9 @@
+import { useState, useEffect } from 'react';
+
+const dataCache: Record<string, unknown> = {}
+const promiseCache: Record<string, Promise<unknown>> = {};
+
+
 // You may edit this file, add new files to support this file,
 // and/or add new dependencies to the project as you see fit.
 // However, you must not change the surface API presented from this file,
@@ -28,12 +34,54 @@ type UseCachingFetch = (url: string) => {
  *
  */
 export const useCachingFetch: UseCachingFetch = (url) => {
+  const [data, setData] = useState<unknown | null>(
+    () => dataCache[url] ?? null
+  )
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(() => !dataCache[url]);
+
+  useEffect(() => {
+    if (dataCache[url]) {
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelledFetch = false;
+
+    setIsLoading(true);
+    let promise = promiseCache[url];
+    if(!promise) {
+      promise = fetch(url).then((response) => {
+        if(!response || !response.ok) {
+          // throw error
+        }
+        return response.json();
+      })
+      .then((json) => {
+        dataCache[url] = json;
+        return json;
+      })
+      promiseCache[url] = promise;
+    }
+
+    promise.then((json) => {
+      if (!cancelledFetch) {
+        setData(json);
+        setIsLoading(false);
+      }
+    }).catch((err) => {
+      if (!cancelledFetch) {
+        setError(err as Error);
+        setIsLoading(false);
+      }
+    });
+
+  }, [url]);
+
   return {
-    data: null,
-    isLoading: false,
-    error: new Error(
-      'UseCachingFetch has not been implemented, please read the instructions in DevTask.md',
-    ),
+    data,
+    isLoading,
+    error,
   };
 };
 
@@ -52,9 +100,19 @@ export const useCachingFetch: UseCachingFetch = (url) => {
  *
  */
 export const preloadCachingFetch = async (url: string): Promise<void> => {
-  throw new Error(
-    'preloadCachingFetch has not been implemented, please read the instructions in DevTask.md',
-  );
+  if(!dataCache[url]) {
+    const apiData = await fetch(url).then((response) => {
+      if(response && response?.ok){
+        return response.json();
+      }
+      else {
+        throw new Error(
+          'Could not fetch data from API.',
+        );
+      }
+    })
+    dataCache[url] = apiData;
+  }
 };
 
 /**
