@@ -21,7 +21,7 @@ In the development of this task, I have had to do the following:
 * Create cache hooks to ensure that data is loaded efficiently
 ## Cache
 There are two JavaScript objects initialized and used for the cache. These are simply two objects that use key-value pairs to efficiently retrieve data.
-* dataCache maps each URL to its fetched JSON result. Tch url to his allows for quick retreival after the initial fetch.
+* dataCache maps each URL to its fetched JSON result. This allows for quick retreival after the initial fetch.
 * promiseCache maps each URL to the promise besing used for its fetch. This allows for multiple components that may depend on it to utilize the same network request.
 ## Future Development
 In order for us to acheive a higher level of code standards and best practices, we should implement the following:
